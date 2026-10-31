@@ -1,0 +1,21 @@
+{
+  "name": "redball-adventure",
+  "version": "1.0.0",
+  "description": "Red Ball Adventure - pixel art retro platformer inspired by classic Nokia games",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ghosterx1/RedBall-Adventure.git"
+  },
+  "keywords": ["red-ball", "pixel-art", "retro", "nokia", "platformer"],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Ghosterx1/RedBall-Adventure/issues"
+  },
+  "homepage": "https://github.com/Ghosterx1/RedBall-Adventure#readme"
+}
