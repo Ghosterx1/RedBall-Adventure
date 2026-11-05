@@ -3,9 +3,14 @@
   "version": "1.0.0",
   "description": "Red Ball Adventure - pixel art retro platformer inspired by classic Nokia games",
   "main": "server.js",
+  "type": "module",
   "scripts": {
     "start": "node server.js",
-    "dev": "node server.js"
+    "dev": "node server.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=18"
   },
   "repository": {
     "type": "git",

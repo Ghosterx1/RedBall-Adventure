@@ -1,14 +1,20 @@
-const http = require('http');
-const fs = require('fs');
-const path = require('path');
+import http from 'node:http';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const PORT = process.env.PORT || 3000;
-const ROOT = __dirname;
+const ROOT = path.dirname(fileURLToPath(import.meta.url));
+
+// Juego nuevo (ES Modules) vive en /index.html.
+// El prototipo antiguo sigue accesible en /Index/Index.html como referencia.
+const RUTA_INICIO = '/index.html';
 
 const MIME = {
   '.html': 'text/html; charset=utf-8',
   '.css': 'text/css; charset=utf-8',
   '.js': 'application/javascript; charset=utf-8',
+  '.mjs': 'application/javascript; charset=utf-8',
   '.json': 'application/json; charset=utf-8',
   '.png': 'image/png',
   '.jpg': 'image/jpeg',
@@ -19,15 +25,21 @@ const MIME = {
   '.woff': 'font/woff',
   '.woff2': 'font/woff2',
   '.ttf': 'font/ttf',
+  '.mp3': 'audio/mpeg',
+  '.ogg': 'audio/ogg',
+  '.wav': 'audio/wav',
   '.md': 'text/markdown; charset=utf-8'
 };
 
 const server = http.createServer((req, res) => {
   let urlPath = decodeURIComponent(req.url.split('?')[0]);
-  if (urlPath === '/' || urlPath === '') urlPath = '/Index/Index.html';
+  if (urlPath === '/' || urlPath === '') urlPath = RUTA_INICIO;
 
   const filePath = path.join(ROOT, urlPath);
-  if (!filePath.startsWith(ROOT)) {
+  // Comprobación robusta: una ruta hermana como /RedBall-adventure-x comparte
+  // prefijo con ROOT pero no está dentro de él.
+  const relativa = path.relative(ROOT, filePath);
+  if (relativa.startsWith('..') || path.isAbsolute(relativa)) {
     res.statusCode = 403;
     res.end('Forbidden');
     return;

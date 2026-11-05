@@ -1,0 +1,21 @@
+# Dependencias
+node_modules/
+
+# Registros
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-error.log*
+
+# Sistema operativo / editor
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+.idea/
+
+# Cobertura y temporales
+coverage/
+.nyc_output/
+dist/
+tmp/
