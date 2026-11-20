@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="description" content="Red Ball Adventure: plataformas pixel art retro inspirado en los clásicos de Nokia." />
+  <meta name="theme-color" content="#0b1d33" />
+  <!-- URL de la API de récords. Vacío = mismo origen (la sirve el propio
+       backend). Si el juego se aloja en otro dominio, pon aquí la URL
+       completa, por ejemplo: content="https://mi-api.com/api" -->
+  <meta name="redball-api" content="" />
+  <title>Red Ball Adventure</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><circle cx='8' cy='8' r='7' fill='%23e5342a' stroke='%23591b12' stroke-width='2'/></svg>" />
+  <link rel="stylesheet" href="./Css/layout.css" />
+  <link rel="stylesheet" href="./Css/ui.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <div class="escenario">
+    <h1 class="oculto">Red Ball Adventure</h1>
+
+    <!-- HUD del DOM: es la interfaz del jugador (monedas, puntos, vidas y
+         progreso). El canvas solo pinta la misión del nivel. -->
+    <section class="hud" id="hud" aria-label="Estado de la partida">
+      <div class="hud__grupo hud__grupo--monedas">
+        <span class="hud__icono hud__icono--moneda" aria-hidden="true"></span>
+        <span class="hud__valor" id="hud-monedas">0/0</span>
+      </div>
+      <div class="hud__grupo">
+        <span class="hud__etiqueta">PUNTOS</span>
+        <span class="hud__valor" id="hud-puntos">0</span>
+        <span class="hud__record" id="hud-record" hidden>RÉCORD 0</span>
+      </div>
+      <div class="hud__grupo hud__grupo--vidas">
+        <span class="hud__etiqueta">VIDAS</span>
+        <span class="hud__vidas" id="hud-vidas"></span>
+      </div>
+      <div class="hud__nivel" id="hud-nivel">NIVEL 1/5</div>
+      <div
+        class="hud__barra"
+        id="hud-progreso"
+        role="progressbar"
+        aria-label="Progreso del nivel"
+        aria-valuemin="0"
+        aria-valuemax="100"
+        aria-valuenow="0"
+      >
+        <div class="hud__barra-relleno" id="hud-progreso-relleno"></div>
+      </div>
+    </section>
+
+    <div class="marco">
+      <canvas
+        id="juego"
+        width="480"
+        height="270"
+        tabindex="0"
+        aria-label="Área de juego de Red Ball Adventure. Usa las flechas para moverte, espacio para saltar, X para el impulso y P para la pausa."
+      ></canvas>
+
+      <!-- Pantallas (menú, niveles, pausa y final). Se superponen al lienzo:
+           todo es HTML + CSS, cero texto de menú pintado en el canvas. -->
+      <div class="pantallas" id="pantallas">
+        <section class="pantalla pantalla--opaca pantalla--activa" id="pantalla-titulo" aria-label="Menú principal">
+          <p class="logo" aria-hidden="true">
+            <span class="logo__rojo">RED BALL</span>
+            <span class="logo__oro">ADVENTURE</span>
+          </p>
+          <p class="pantalla__pista">PIXEL PLATFORMER · 5 NIVELES</p>
+          <div class="menu">
+            <button class="menu__boton menu__boton--principal" type="button" id="boton-jugar">JUGAR</button>
+            <button class="menu__boton" type="button" id="boton-niveles">NIVELES</button>
+            <button class="menu__boton" type="button" id="boton-records">RÉCORDS</button>
+          </div>
+          <ul class="pantalla__ayuda">
+            <li>&#9664; &#9654; moverse</li>
+            <li>ESPACIO saltar</li>
+            <li>X impulso</li>
+            <li>P pausa · R reiniciar</li>
+          </ul>
+        </section>
+
+        <section class="pantalla pantalla--opaca" id="pantalla-niveles" aria-label="Selección de niveles">
+          <h2 class="pantalla__titulo">SELECCIONA NIVEL</h2>
+          <p class="pantalla__resumen" id="niveles-resumen">COMPLETADOS 0/5</p>
+          <div class="niveles" id="rejilla-niveles"></div>
+          <button class="menu__boton" type="button" id="boton-niveles-menu">MENÚ</button>
+        </section>
+
+        <section class="pantalla pantalla--opaca" id="pantalla-records" aria-label="Mejores jugadores">
+          <h2 class="pantalla__titulo">RÉCORDS</h2>
+          <p class="pantalla__resumen" id="records-resumen">CARGANDO RÉCORDS...</p>
+          <ol class="records" id="tabla-records"></ol>
+          <button class="menu__boton" type="button" id="boton-records-volver">MENÚ</button>
+        </section>
+
+        <section class="pantalla" id="pantalla-pausa" aria-label="Menú de pausa">
+          <h2 class="pantalla__titulo">PAUSA</h2>
+          <p class="pantalla__resumen" id="pausa-resumen"></p>
+          <div class="menu">
+            <button class="menu__boton menu__boton--principal" type="button" id="boton-continuar">CONTINUAR</button>
+            <button class="menu__boton" type="button" id="boton-reiniciar">REINICIAR NIVEL</button>
+            <button class="menu__boton" type="button" id="boton-pausa-niveles">NIVELES</button>
+            <button class="menu__boton" type="button" id="boton-pausa-menu">MENÚ PRINCIPAL</button>
+          </div>
+        </section>
+
+        <section class="pantalla" id="pantalla-victoria" aria-label="Nivel superado">
+          <h2 class="pantalla__titulo pantalla__titulo--victoria">¡NIVEL SUPERADO!</h2>
+          <p class="pantalla__resumen" id="victoria-resumen"></p>
+          <div class="menu">
+            <button class="menu__boton menu__boton--principal" type="button" id="boton-siguiente">SIGUIENTE NIVEL</button>
+            <button class="menu__boton" type="button" id="boton-repetir">REPETIR</button>
+            <button class="menu__boton" type="button" id="boton-victoria-niveles">NIVELES</button>
+          </div>
+        </section>
+
+        <section class="pantalla" id="pantalla-derrota" aria-label="Partida perdida">
+          <h2 class="pantalla__titulo pantalla__titulo--derrota">GAME OVER</h2>
+          <p class="pantalla__resumen" id="derrota-resumen"></p>
+          <div class="menu">
+            <button class="menu__boton menu__boton--principal" type="button" id="boton-reintentar">REINTENTAR</button>
+            <button class="menu__boton" type="button" id="boton-derrota-niveles">NIVELES</button>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <div class="controles" role="group" aria-label="Controles táctiles">
+      <button class="controles__boton" type="button" data-accion="izquierda" aria-label="Mover a la izquierda">&#9664;</button>
+      <button class="controles__boton" type="button" data-accion="derecha" aria-label="Mover a la derecha">&#9654;</button>
+      <button class="controles__boton controles__boton--salto" type="button" data-accion="salto" aria-label="Saltar">SALTAR</button>
+      <button class="controles__boton controles__boton--impulso" type="button" data-accion="impulso" aria-label="Impulso">IMPULSO</button>
+    </div>
+
+    <p id="aviso" class="aviso" role="status" aria-live="polite"></p>
+  </div>
+
+  <noscript>
+    <p class="aviso aviso--error">Red Ball Adventure necesita JavaScript activado para funcionar.</p>
+  </noscript>
+
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Red Ball Adventure</title>
+  <link rel="stylesheet" href="/Css/Main.css" />
+  <link rel="stylesheet" href="/Css/Game.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="game-shell">
+    <canvas id="game" width="480" height="270"></canvas>
+  </div>
+  <div class="touch-controls">
+    <button class="tbtn" data-key="ArrowLeft">◀</button>
+    <button class="tbtn" data-key="ArrowRight">▶</button>
+    <button class="tbtn jump" data-key="Space">JUMP</button>
+  </div>
+
+  <script src="/Js/Physics.js"></script>
+  <script src="/Js/Collision.js"></script>
+  <script src="/Js/Player.js"></script>
+  <script src="/Js/Level.js"></script>
+  <script src="/Js/Camara.js"></script>
+  <script src="/Js/Interfaz.js"></script>
+  <script src="/Js/Game.js"></script>
+  <script src="/Js/Main.js"></script>
+</body>
+</html>

@@ -1,22 +1,37 @@
 {
   "name": "redball-adventure",
-  "version": "1.0.0",
-  "description": "Red Ball Adventure - pixel art retro platformer inspired by classic Nokia games",
-  "main": "server.js",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Red Ball Adventure - pixel art retro platformer: frontend en canvas + API de récords y progreso",
   "type": "module",
+  "main": "backend/src/servidor.js",
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
   "scripts": {
-    "start": "node server.js",
-    "dev": "node server.js",
-    "test": "node --test"
+    "start": "node backend/src/servidor.js",
+    "dev": "node --watch backend/src/servidor.js",
+    "test": "node --test \"frontend/pruebas/**/*.test.js\" \"backend/pruebas/**/*.test.js\"",
+    "test:frontend": "node --test \"frontend/pruebas/**/*.test.js\"",
+    "test:backend": "node --test \"backend/pruebas/**/*.test.js\""
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=20.11"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Ghosterx1/RedBall-Adventure.git"
   },
-  "keywords": ["red-ball", "pixel-art", "retro", "nokia", "platformer"],
+  "keywords": [
+    "red-ball",
+    "pixel-art",
+    "retro",
+    "nokia",
+    "platformer",
+    "express",
+    "leaderboard"
+  ],
   "author": "",
   "license": "ISC",
   "bugs": {

@@ -1,0 +1,26 @@
+# ============================================================================
+# Red Ball Adventure — juego + API en un contenedor
+#
+#   docker compose up --build        → http://localhost:3000
+#
+# El volumen `datos` conserva los récords entre reinicios y despliegues.
+# ============================================================================
+services:
+  juego:
+    build: .
+    image: redball-adventure
+    container_name: redball-adventure
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      PORT: "3000"
+      # Cambia esto por tu dominio real cuando lo despliegues:
+      CORS_ORIGENES: "*"
+      LIMITE_PETICIONES: "60"
+    volumes:
+      - datos:/app/backend/datos
+    restart: unless-stopped
+
+volumes:
+  datos:

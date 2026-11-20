@@ -1,0 +1,19 @@
+{
+  "name": "@redball/backend",
+  "version": "2.0.0",
+  "private": true,
+  "description": "API de Red Ball Adventure: récords globales, progreso sincronizado y catálogo de niveles. También sirve el frontend.",
+  "type": "module",
+  "main": "src/servidor.js",
+  "scripts": {
+    "start": "node src/servidor.js",
+    "dev": "node --watch src/servidor.js",
+    "test": "node --test \"pruebas/**/*.test.js\""
+  },
+  "dependencies": {
+    "express": "^5.1.0"
+  },
+  "engines": {
+    "node": ">=20.11"
+  }
+}

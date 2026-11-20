@@ -1,0 +1,230 @@
+/* ============================================================
+   layout.css — estructura de la página (sin colores de juego).
+   Los colores de la escena viven en src/config/paleta.js.
+   ============================================================ */
+
+:root {
+  --fondo-pagina: #0b1d33;
+  --fondo-marco: #10243d;
+  --borde-marco: #1d3b5c;
+  --texto: #cfe3f7;
+  --texto-tenue: #7f9cbb;
+  --acento: #e5342a;
+
+  /* ── Huecos que NO son lienzo (todos en alto) ─────────────────────────
+     El lienzo es 16:9 y nunca puede desbordar la ventana: se le da lo que
+     sobra después de descontar el HUD, los botones táctiles, los márgenes
+     y el aviso de ayuda. Cada modo (ratón, móvil vertical, móvil apaisado)
+     solo cambia estos números; el resto del CSS no se toca. */
+  --hueco-hud: 56px; /* HUD del DOM (ui.css lo baja a 44px en pantallas estrechas) */
+  --hueco-controles: 132px; /* fila de botones táctiles */
+  --hueco-extra: 78px; /* márgenes, separaciones y aviso de ayuda */
+  --hueco-lateral: 16px; /* padding horizontal de .escenario */
+  --rail: 0px; /* columnas laterales de botones (móvil apaisado) */
+
+  /* Ancho único del lienzo Y del HUD: así quedan siempre alineados. */
+  --ancho-juego: min(
+    calc(100vw - var(--hueco-lateral)),
+    calc((100vh - var(--hueco-hud) - var(--hueco-controles) - var(--hueco-extra)) * 16 / 9)
+  );
+}
+
+/* Navegadores modernos: alto real de la ventana. En el móvil `100vh` miente
+   en cuanto aparece o se esconde la barra del navegador y el juego se saldría
+   de la pantalla; con `dvh` el lienzo se recalcula solo al girar el móvil. */
+@supports (height: 100dvh) {
+  :root {
+    --ancho-juego: min(
+      calc(100vw - var(--hueco-lateral)),
+      calc((100dvh - var(--hueco-hud) - var(--hueco-controles) - var(--hueco-extra)) * 16 / 9)
+    );
+  }
+}
+
+/* Escritorio con ratón: no hay botones táctiles, todo el alto es para el juego. */
+@media (hover: hover) and (pointer: fine) {
+  :root {
+    --hueco-controles: 0px;
+  }
+}
+
+/* Móvil en vertical: el mando va en una fila alta pegada abajo (ver ui.css). */
+@media (pointer: coarse) and (orientation: portrait) {
+  :root {
+    --hueco-controles: 120px;
+  }
+}
+
+/* Pantallas bajas y anchas (móvil apaisado, ventanas 16:9): menos aire. */
+@media (max-height: 520px) {
+  :root {
+    --hueco-extra: 44px;
+  }
+}
+
+/* Móvil apaisado: los botones se van a dos columnas pegadas a los bordes y el
+   lienzo se queda con todo el alto (mucho más grande que apilado debajo). */
+@media (pointer: coarse) and (orientation: landscape) and (max-height: 520px) {
+  :root {
+    --rail: min(118px, 17vw);
+    --hueco-controles: 0px;
+    --hueco-lateral: calc(var(--rail) * 2 + 16px);
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  /* 100vh como respaldo y `dvh` en cuanto el navegador lo entiende: en el
+     móvil el alto real cambia al aparecer o esconderse la barra del navegador
+     y el juego se saldría por abajo. */
+  height: 100vh;
+  height: 100dvh;
+  min-height: 100%;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: radial-gradient(circle at 50% 0%, #14304f 0%, var(--fondo-pagina) 70%);
+  color: var(--texto);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  /* `manipulation`: sin zoom por doble toque, pero los menús largos se pueden
+     seguir desplazando con el dedo. El lienzo y los botones sí bloquean el
+     gesto entero (`touch-action: none`) para que nada se mueva mientras juegas. */
+  touch-action: manipulation;
+  overscroll-behavior: none;
+}
+
+.escenario {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  padding: 8px;
+}
+
+/* El lienzo mantiene 16:9 y nunca desborda la ventana: su ancho sale de
+   `--ancho-juego` (arriba), que ya descuenta el HUD, los controles táctiles,
+   los márgenes y el aviso. El HUD del DOM usa el mismo ancho, así que ambos
+   quedan siempre alineados, también al girar el móvil. */
+#juego {
+  display: block;
+  width: var(--ancho-juego);
+  height: auto;
+  aspect-ratio: 16 / 9;
+  background: var(--fondo-marco);
+  border: 4px solid var(--borde-marco);
+  border-radius: 6px;
+  box-shadow: 0 14px 36px rgb(0 0 0 / 45%);
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  outline: none;
+  touch-action: none;
+}
+
+/* El marco solo envuelve al lienzo: las pantallas se superponen a él. */
+.marco {
+  position: relative;
+  display: flex;
+  max-width: 100%;
+}
+
+#juego:focus-visible {
+  border-color: var(--acento);
+  box-shadow: 0 0 0 3px rgb(229 52 42 / 35%), 0 14px 36px rgb(0 0 0 / 45%);
+}
+
+/* Solo lectores de pantalla */
+.oculto {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.aviso {
+  margin: 0;
+  min-height: 1.2em;
+  color: var(--texto-tenue);
+  font-family: "Press Start 2P", ui-monospace, monospace;
+  font-size: 10px;
+  line-height: 1.6;
+  text-align: center;
+}
+
+.aviso--error {
+  color: #ff9b8f;
+  padding: 8px;
+  line-height: 1.8;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #juego {
+    box-shadow: none;
+  }
+}
+
+/* ============================================================
+   Móvil: la página se recoloca según la orientación.
+   (Los tamaños de los botones viven en ui.css, junto a su estilo.)
+   ============================================================ */
+
+/* Pantallas bajas (móvil apaisado, ventanas 16:9): fuera el aviso de ayuda
+   —las teclas no existen en el móvil y los botones ya se ven— y menos aire,
+   para que el lienzo gane todo el alto posible. */
+@media (max-height: 520px) {
+  .escenario {
+    gap: 8px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+  }
+
+  .aviso {
+    display: none;
+  }
+}
+
+/* Móvil en vertical: sobra alto, así que el lienzo se queda arriba (pegado al
+   HUD) y el mando se va abajo, donde llegan los pulgares. */
+@media (pointer: coarse) and (orientation: portrait) {
+  .escenario {
+    justify-content: flex-start;
+    padding-top: calc(10px + env(safe-area-inset-top, 0px));
+    padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .controles {
+    margin-top: auto;
+  }
+}
+
+/* Móvil apaisado: se reservan dos columnas a los lados (los botones van ahí,
+   fijos contra los bordes) y el lienzo crece hasta el alto real de la
+   pantalla: se ve casi el doble de grande que apilado debajo. */
+@media (pointer: coarse) and (orientation: landscape) and (max-height: 520px) {
+  .escenario {
+    padding-left: calc(8px + var(--rail) + env(safe-area-inset-left, 0px));
+    padding-right: calc(8px + var(--rail) + env(safe-area-inset-right, 0px));
+  }
+}

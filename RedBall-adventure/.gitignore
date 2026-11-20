@@ -1,0 +1,34 @@
+# ── Dependencias ────────────────────────────────────────────────────────────
+node_modules/
+
+# ── Registros ───────────────────────────────────────────────────────────────
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-error.log*
+
+# ── Sistema operativo / editor ──────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+.idea/
+.vscode/
+
+# ── Cobertura, temporales y artefactos de build ─────────────────────────────
+coverage/
+.nyc_output/
+dist/
+tmp/
+
+# ── Configuración local: las variables de entorno no se versionan ───────────
+.env
+.env.local
+.env.*.local
+
+# ── Datos del servidor ──────────────────────────────────────────────────────
+# El JSON de récords se crea al vuelo; no es código ni se sube al repo.
+backend/datos/*.json
+backend/datos/*.tmp
+
+# NOTA: `docs/`, `frontend/pruebas/` y `README.md` SÍ se versionan.
